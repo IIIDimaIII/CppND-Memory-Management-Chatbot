@@ -1,0 +1,5 @@
+These are build instructions for my Win machine
+
+cd build
+cmake -A x64  -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake  -DVCPKG_TARGET_TRIPLET=x64-windows ..
+cmake --build . --config Release

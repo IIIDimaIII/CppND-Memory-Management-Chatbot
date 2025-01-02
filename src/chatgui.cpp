@@ -11,7 +11,7 @@ const int width = 414;
 const int height = 736;
 
 // wxWidgets APP
-IMPLEMENT_APP(ChatBotApp);
+wxIMPLEMENT_APP(ChatBotApp);
 
 std::string dataPath = "../";
 std::string imgBasePath = dataPath + "images/";
