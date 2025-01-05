@@ -32,7 +32,7 @@ ChatBot::ChatBot(std::string filename)
 
 ChatBot::~ChatBot()
 {
-    std::cout << "ChatBot Destructor" << std::endl;
+    std::cout << "ChatBot Destructor (instance: " << this << ")"<< std::endl;
 
     // deallocate heap memory
     if(_image != NULL) // Attention: wxWidgets used NULL and not nullptr
@@ -44,7 +44,63 @@ ChatBot::~ChatBot()
 
 //// STUDENT CODE
 ////
+ChatBot::ChatBot(const ChatBot &other) 
+{
+    std::cout << "ChatBot Copy Constructor" << std::endl;
 
+    _chatLogic = other._chatLogic;
+    _rootNode = other._rootNode;
+    if (other._image) {
+        _image = new  wxBitmap(*other._image);
+    } 
+}
+
+ChatBot &ChatBot::operator=(const ChatBot &other) 
+{
+    std::cout << "ChatBot Copy-Assigned" << std::endl;
+    
+    if (this != &other) {        
+        if(_image != NULL) 
+        {
+            delete _image;
+            _image = NULL;
+        }
+        _chatLogic = other._chatLogic;
+        _rootNode = other._rootNode;
+        if (other._image) {
+            _image = new wxBitmap(*other._image);
+        }
+    }
+
+    return *this;
+}
+
+ChatBot::ChatBot(ChatBot &&other) 
+{
+    std::cout << "ChatBot Move Constructor" << std::endl;
+    _chatLogic = other._chatLogic;
+    _rootNode = other._rootNode;
+    _image = other._image;
+    other._chatLogic = nullptr;
+    other._rootNode = nullptr;
+    other._image = nullptr;
+}
+
+ChatBot &ChatBot::operator=(ChatBot &&other) 
+{
+    std::cout << "ChatBot Move-Assigned" << std::endl;
+    if (this != &other) {
+        delete _image;
+        _chatLogic = other._chatLogic;
+        _rootNode = other._rootNode;
+        _image = other._image;
+        other._chatLogic = nullptr;
+        other._rootNode = nullptr;
+        other._image = nullptr;
+    }
+
+    return *this;
+}
 ////
 //// EOF STUDENT CODE
 
@@ -82,6 +138,7 @@ void ChatBot::ReceiveMessageFromUser(std::string message)
     _currentNode->MoveChatbotToNewNode(newNode);
 }
 
+
 void ChatBot::SetCurrentNode(GraphNode *node)
 {
     // update pointer to current node
@@ -93,6 +150,7 @@ void ChatBot::SetCurrentNode(GraphNode *node)
     std::uniform_int_distribution<int> dis(0, answers.size() - 1);
     std::string answer = answers.at(dis(generator));
 
+    _chatLogic->SetChatbotHandle(this);  
     // send selected node answer to user
     _chatLogic->SendMessageToUser(answer);
 }
